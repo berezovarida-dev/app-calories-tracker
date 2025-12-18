@@ -1,0 +1,203 @@
+.product-info-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 1rem;
+}
+
+.product-info-container {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.product-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.product-info-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.product-info-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.product-info-close:hover {
+  color: #111827;
+}
+
+.product-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-info-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.product-info-brand {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.product-info-nutrition {
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+}
+
+.product-info-nutrition-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.product-info-nutrition-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.product-info-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-info-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.product-info-amount-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-info-amount-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+}
+
+.product-info-amount-input:focus {
+  outline: none;
+  border-color: #059669;
+}
+
+.product-info-unit-select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+}
+
+.product-info-time-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+}
+
+.product-info-time-input:focus {
+  outline: none;
+  border-color: #059669;
+}
+
+.product-info-calculated {
+  padding: 0.75rem;
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  border-radius: 0.75rem;
+}
+
+.product-info-calculated-label {
+  font-size: 0.75rem;
+  color: #166534;
+  margin-bottom: 0.25rem;
+}
+
+.product-info-calculated-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: #166534;
+}
+
+.product-info-calculated-kcal {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.product-info-error {
+  padding: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.product-info-submit {
+  padding: 0.875rem;
+  background: linear-gradient(to right, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.product-info-submit:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.product-info-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

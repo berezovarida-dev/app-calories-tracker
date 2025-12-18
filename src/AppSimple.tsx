@@ -4,6 +4,12 @@ import { useTodayData } from './hooks/useTodayData'
 import { useProfile } from './hooks/useProfile'
 import { useAuth } from './hooks/useAuth'
 import { AuthScreen } from './components/AuthScreen'
+import { BarcodeScanner } from './components/BarcodeScanner'
+import { ProductInfo } from './components/ProductInfo'
+import {
+  fetchProductByBarcode,
+  type ProductInfo as ProductInfoType,
+} from './utils/openFoodFacts'
 import { supabase } from './supabaseClient'
 
 type TabKey = 'today' | 'analytics' | 'profile'
@@ -71,6 +77,11 @@ function AppSimple() {
   const [lastWaterTime, setLastWaterTime] = useState<Date | null>(new Date())
   const [selectedAnalyticsDay, setSelectedAnalyticsDay] =
     useState<string>('2025-01-08')
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false)
+  const [scannedProduct, setScannedProduct] = useState<ProductInfoType | null>(
+    null,
+  )
+  const [scannedBarcode, setScannedBarcode] = useState<string | null>(null)
 
   // Загружаем данные из Supabase
   const todayDate = new Date()
@@ -190,7 +201,31 @@ function AppSimple() {
     }
     setLastAction(action)
     setIsAddOpen(false)
-    // Здесь позже появится реальная логика (формы, навигация)
+
+    if (action === 'barcode') {
+      setShowBarcodeScanner(true)
+    }
+    // Остальные действия будут реализованы позже
+  }
+
+  const handleBarcodeScanned = async (barcode: string) => {
+    setShowBarcodeScanner(false)
+    setScannedBarcode(barcode)
+
+    // Загружаем информацию о продукте
+    const product = await fetchProductByBarcode(barcode)
+
+    if (product) {
+      setScannedProduct(product)
+    } else {
+      alert('Продукт не найден в базе Open Food Facts. Попробуй другой штрихкод или добавь продукт вручную.')
+    }
+  }
+
+  const handleProductSaved = () => {
+    setScannedProduct(null)
+    setScannedBarcode(null)
+    refetchToday()
   }
 
   // Показываем экран авторизации, если пользователь не залогинен
@@ -752,6 +787,25 @@ function AppSimple() {
             </button>
           </div>
         </div>
+      )}
+
+      {showBarcodeScanner && (
+        <BarcodeScanner
+          onScan={handleBarcodeScanned}
+          onClose={() => setShowBarcodeScanner(false)}
+        />
+      )}
+
+      {scannedProduct && scannedBarcode && (
+        <ProductInfo
+          product={scannedProduct}
+          barcode={scannedBarcode}
+          onClose={() => {
+            setScannedProduct(null)
+            setScannedBarcode(null)
+          }}
+          onSaved={handleProductSaved}
+        />
       )}
     </div>
   )

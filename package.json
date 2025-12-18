@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.88.0",
+    "@zxing/library": "^0.21.3",
     "dotenv": "^17.2.3",
     "pg": "^8.16.3",
     "postgres": "^3.4.7",
