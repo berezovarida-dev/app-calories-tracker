@@ -7,6 +7,7 @@ import { AuthScreen } from './components/AuthScreen'
 import { BarcodeScanner } from './components/BarcodeScanner'
 import { ProductInfo } from './components/ProductInfo'
 import { PhotoUpload } from './components/PhotoUpload'
+import { ActivityAdd } from './components/ActivityAdd'
 import {
   fetchProductByBarcode,
   type ProductInfo as ProductInfoType,
@@ -80,10 +81,13 @@ function AppSimple() {
     useState<string>('2025-01-08')
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false)
   const [showPhotoUpload, setShowPhotoUpload] = useState(false)
+  const [showActivityAdd, setShowActivityAdd] = useState(false)
   const [scannedProduct, setScannedProduct] = useState<ProductInfoType | null>(
     null,
   )
   const [scannedBarcode, setScannedBarcode] = useState<string | null>(null)
+  const [mealsExpanded, setMealsExpanded] = useState(true)
+  const [activitiesExpanded, setActivitiesExpanded] = useState(true)
 
   // Загружаем данные из Supabase
   const todayDate = new Date()
@@ -208,6 +212,8 @@ function AppSimple() {
       setShowBarcodeScanner(true)
     } else if (action === 'photo') {
       setShowPhotoUpload(true)
+    } else if (action === 'activity') {
+      setShowActivityAdd(true)
     }
     // Остальные действия будут реализованы позже
   }
@@ -406,76 +412,102 @@ function AppSimple() {
 
               <section className="section">
                 <div className="section-header">
-                  <h2 className="section-title">Приёмы пищи</h2>
-                  <span className="section-subtitle">
-                    Всего: {consumed} ккал
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setMealsExpanded(!mealsExpanded)}
+                    className="section-header-toggle"
+                  >
+                    <h2 className="section-title">Приёмы пищи</h2>
+                    <span className="section-subtitle">
+                      Всего: {consumed} ккал
+                    </span>
+                    <span className="section-toggle-icon">
+                      {mealsExpanded ? '▼' : '▶'}
+                    </span>
+                  </button>
                 </div>
-                {todayData.meals.length === 0 ? (
-                  <div className="empty-state">
-                    Можно добавить завтрак позже — ничего страшного
-                  </div>
-                ) : (
-                  <div className="cards-list">
-                    {todayData.meals.map((meal) => {
-                      const mealDate = new Date(meal.eaten_at)
-                      const timeStr = `${String(mealDate.getHours()).padStart(
-                        2,
-                        '0',
-                      )}:${String(mealDate.getMinutes()).padStart(2, '0')}`
-                      return (
-                        <article key={meal.id} className="entry-card">
-                          <div className="entry-main">
-                            <div className="entry-title">{meal.name}</div>
-                            <div className="entry-meta">
-                              <span>{timeStr}</span>
-                              <span>
-                                Б {meal.protein} · Ж {meal.fat} · У {meal.carbs}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="entry-kcal">{meal.kcal} ккал</div>
-                        </article>
-                      )
-                    })}
-                  </div>
+                {mealsExpanded && (
+                  <>
+                    {todayData.meals.length === 0 ? (
+                      <div className="empty-state">
+                        Можно добавить завтрак позже — ничего страшного
+                      </div>
+                    ) : (
+                      <div className="cards-list">
+                        {todayData.meals.map((meal) => {
+                          const mealDate = new Date(meal.eaten_at)
+                          const timeStr = `${String(mealDate.getHours()).padStart(
+                            2,
+                            '0',
+                          )}:${String(mealDate.getMinutes()).padStart(2, '0')}`
+                          return (
+                            <article key={meal.id} className="entry-card">
+                              <div className="entry-main">
+                                <div className="entry-title">{meal.name}</div>
+                                <div className="entry-meta">
+                                  <span>{timeStr}</span>
+                                  <span>
+                                    Б {meal.protein} · Ж {meal.fat} · У {meal.carbs}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="entry-kcal">{meal.kcal} ккал</div>
+                            </article>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </>
                 )}
               </section>
 
               <section className="section">
                 <div className="section-header">
-                  <h2 className="section-title">Активность</h2>
-                  <span className="section-subtitle">Всего: {burned} ккал</span>
+                  <button
+                    type="button"
+                    onClick={() => setActivitiesExpanded(!activitiesExpanded)}
+                    className="section-header-toggle"
+                  >
+                    <h2 className="section-title">Активность</h2>
+                    <span className="section-subtitle">Всего: {burned} ккал</span>
+                    <span className="section-toggle-icon">
+                      {activitiesExpanded ? '▼' : '▶'}
+                    </span>
+                  </button>
                 </div>
-                {todayData.activities.length === 0 ? (
-                  <div className="empty-state">
-                    Небольшая прогулка тоже считается — можно добавить позже
-                  </div>
-                ) : (
-                  <div className="cards-list">
-                    {todayData.activities.map((activity) => {
-                      const activityDate = new Date(activity.occurred_at)
-                      const timeStr = `${String(
-                        activityDate.getHours(),
-                      ).padStart(2, '0')}:${String(
-                        activityDate.getMinutes(),
-                      ).padStart(2, '0')}`
-                      return (
-                        <article key={activity.id} className="entry-card">
-                          <div className="entry-main">
-                            <div className="entry-title">{activity.type}</div>
-                            <div className="entry-meta">
-                              <span>{timeStr}</span>
-                              <span>{activity.duration_minutes} мин</span>
-                            </div>
-                          </div>
-                          <div className="entry-kcal entry-kcal-negative">
-                            −{activity.calories} ккал
-                          </div>
-                        </article>
-                      )
-                    })}
-                  </div>
+                {activitiesExpanded && (
+                  <>
+                    {todayData.activities.length === 0 ? (
+                      <div className="empty-state">
+                        Небольшая прогулка тоже считается — можно добавить позже
+                      </div>
+                    ) : (
+                      <div className="cards-list">
+                        {todayData.activities.map((activity) => {
+                          const activityDate = new Date(activity.occurred_at)
+                          const timeStr = `${String(
+                            activityDate.getHours(),
+                          ).padStart(2, '0')}:${String(
+                            activityDate.getMinutes(),
+                          ).padStart(2, '0')}`
+                          return (
+                            <article key={activity.id} className="entry-card">
+                              <div className="entry-main">
+                                <div className="entry-title">{activity.type}</div>
+                                <div className="entry-meta">
+                                  <span>{timeStr}</span>
+                                  <span>{activity.duration_minutes} мин</span>
+                                </div>
+                              </div>
+                              <div className="entry-kcal entry-kcal-negative">
+                                −{activity.calories} ккал
+                              </div>
+                            </article>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </>
                 )}
               </section>
             </>
@@ -789,6 +821,13 @@ function AppSimple() {
       {showPhotoUpload && (
         <PhotoUpload
           onClose={() => setShowPhotoUpload(false)}
+          onSaved={handleProductSaved}
+        />
+      )}
+
+      {showActivityAdd && (
+        <ActivityAdd
+          onClose={() => setShowActivityAdd(false)}
           onSaved={handleProductSaved}
         />
       )}
