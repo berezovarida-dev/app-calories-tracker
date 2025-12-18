@@ -26,14 +26,28 @@ export function ProductInfo({
 
   const calculateNutrients = () => {
     const amountNum = parseFloat(amount) || 0
+    if (amountNum <= 0) {
+      return { kcal: 0, protein: 0, fat: 0, carbs: 0 }
+    }
+    
     const multiplier = amountNum / 100
 
-    return {
+    const calculated = {
       kcal: Math.round(product.kcalPer100g * multiplier),
       protein: Math.round(product.proteinPer100g * multiplier * 10) / 10,
       fat: Math.round(product.fatPer100g * multiplier * 10) / 10,
       carbs: Math.round(product.carbsPer100g * multiplier * 10) / 10,
     }
+
+    // Логируем расчет для отладки
+    console.log('Calculating nutrients:', {
+      productKcalPer100g: product.kcalPer100g,
+      amount: amountNum,
+      multiplier,
+      calculatedKcal: calculated.kcal,
+    })
+
+    return calculated
   }
 
   const nutrients = calculateNutrients()
@@ -58,18 +72,41 @@ export function ProductInfo({
       const eatenAt = new Date()
       eatenAt.setHours(hours, minutes, 0, 0)
 
-      const { error: insertError } = await supabase.from('daily_entries').insert({
+      // Проверяем, что калории не равны 0 (если продукт имеет калории)
+      if (product.kcalPer100g > 0 && nutrients.kcal === 0) {
+        console.error('Warning: Product has calories but calculated kcal is 0!', {
+          productKcalPer100g: product.kcalPer100g,
+          amount,
+          multiplier: (parseFloat(amount) || 0) / 100,
+        })
+      }
+
+      const insertData = {
         user_id: user.id,
         name: product.name,
-        kcal: nutrients.kcal,
-        protein: Math.round(nutrients.protein),
-        fat: Math.round(nutrients.fat),
-        carbs: Math.round(nutrients.carbs),
+        kcal: Math.max(0, nutrients.kcal), // Убеждаемся, что не отрицательное
+        protein: Math.max(0, Math.round(nutrients.protein)),
+        fat: Math.max(0, Math.round(nutrients.fat)),
+        carbs: Math.max(0, Math.round(nutrients.carbs)),
         amount: parseFloat(amount) || 0,
         unit: unit,
         eaten_at: eatenAt.toISOString(),
         note: product.brand ? `Бренд: ${product.brand}` : undefined,
+      }
+      
+      console.log('Saving product to database:', {
+        productName: product.name,
+        productKcalPer100g: product.kcalPer100g,
+        amount,
+        calculatedKcal: nutrients.kcal,
+        insertData,
       })
+      
+      const { error: insertError, data: insertedData } = await supabase.from('daily_entries').insert(insertData).select()
+      
+      if (insertedData) {
+        console.log('Successfully inserted:', insertedData)
+      }
 
       if (insertError) {
         throw insertError
@@ -109,12 +146,17 @@ export function ProductInfo({
               На 100 {unit === 'g' ? 'г' : 'мл'}:
             </div>
             <div className="product-info-nutrition-values">
-              <span>{product.kcalPer100g} ккал</span>
+              <span>{product.kcalPer100g || 0} ккал</span>
               <span>
                 Б {product.proteinPer100g} · Ж {product.fatPer100g} · У{' '}
                 {product.carbsPer100g}
               </span>
             </div>
+            {product.kcalPer100g === 0 && (
+              <div style={{ marginTop: '0.5rem', color: '#dc2626', fontSize: '0.875rem' }}>
+                ⚠️ Калории не найдены в базе Open Food Facts. Проверьте данные продукта.
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="product-info-form">

@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth'
 import { AuthScreen } from './components/AuthScreen'
 import { BarcodeScanner } from './components/BarcodeScanner'
 import { ProductInfo } from './components/ProductInfo'
+import { PhotoUpload } from './components/PhotoUpload'
 import {
   fetchProductByBarcode,
   type ProductInfo as ProductInfoType,
@@ -78,6 +79,7 @@ function AppSimple() {
   const [selectedAnalyticsDay, setSelectedAnalyticsDay] =
     useState<string>('2025-01-08')
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false)
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false)
   const [scannedProduct, setScannedProduct] = useState<ProductInfoType | null>(
     null,
   )
@@ -204,6 +206,8 @@ function AppSimple() {
 
     if (action === 'barcode') {
       setShowBarcodeScanner(true)
+    } else if (action === 'photo') {
+      setShowPhotoUpload(true)
     }
     // Остальные действия будут реализованы позже
   }
@@ -688,19 +692,6 @@ function AppSimple() {
               <button
                 type="button"
                 className="add-sheet-item"
-                onClick={() => handleAddAction('barcode')}
-              >
-                <div className="add-sheet-item-label">
-                  <span className="add-sheet-item-icon">📦</span>
-                  Штрихкод
-                </div>
-                <div className="add-sheet-item-desc">
-                  Сканируй упаковку — найдём продукт.
-                </div>
-              </button>
-              <button
-                type="button"
-                className="add-sheet-item"
                 onClick={() => handleAddAction('photo')}
               >
                 <div className="add-sheet-item-label">
@@ -708,20 +699,7 @@ function AppSimple() {
                   Фото еды
                 </div>
                 <div className="add-sheet-item-desc">
-                  Сохраним снимок, чтобы вернуться позже.
-                </div>
-              </button>
-              <button
-                type="button"
-                className="add-sheet-item"
-                onClick={() => handleAddAction('search')}
-              >
-                <div className="add-sheet-item-label">
-                  <span className="add-sheet-item-icon">🔍</span>
-                  Поиск продукта
-                </div>
-                <div className="add-sheet-item-desc">
-                  Найди еду по названию или бренду.
+                  Сохраним снимок и найдём продукт по названию или штрихкоду.
                 </div>
               </button>
               <button
@@ -804,6 +782,13 @@ function AppSimple() {
             setScannedProduct(null)
             setScannedBarcode(null)
           }}
+          onSaved={handleProductSaved}
+        />
+      )}
+
+      {showPhotoUpload && (
+        <PhotoUpload
+          onClose={() => setShowPhotoUpload(false)}
           onSaved={handleProductSaved}
         />
       )}
