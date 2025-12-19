@@ -96,11 +96,11 @@ function AppSimple() {
   const { profile, loading: profileLoading } = useProfile()
 
   // Fallback на мок-данные, если пользователь не авторизован или данные не загружены
-  const consumed = todayData.consumed || 960
-  const burned = todayData.burned || 180
-  const balance = todayData.balance || 780
+  const consumed = todayData.consumed || 0
+  const burned = todayData.burned || 0
+  const balance = todayData.balance || 0
   const target = todayData.target || 1900
-  const waterMl = todayData.waterMl || 900
+  const waterMl = todayData.waterMl || 0
   const waterGoal = todayData.waterGoalMl || 2000
 
   // Данные профиля

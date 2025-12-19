@@ -1,13 +1,47 @@
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
-    system-ui, sans-serif;
-  line-height: 1.4;
+  /* FatSecret Color Palette */
+  --fs-primary: #00af49;
+  --fs-primary-dark: #009c41;
+  --fs-text: #030b19;
+  --fs-text-secondary: #6b7280;
+  --fs-text-muted: #9ca3af;
+  --fs-background: #ffffff;
+  --fs-background-light: #f5fff5;
+  --fs-border: rgba(3, 11, 25, 0.1);
+  
+  /* Premium Colors */
+  --fs-premium: #f9c54a;
+  --fs-premium-dark: #e59c0f;
+  --fs-premium-background: #fffdf5;
+  --fs-premium-text: var(--fs-text);
+  
+  /* Typography - FatSecret Style */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  line-height: 1.5;
   font-weight: 400;
-  color: #111827;
-  background-color: #f3f4f6;
+  color: var(--fs-text);
+  background-color: var(--fs-background);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  /* Border Radius */
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
 }
 
 *,
@@ -20,7 +54,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f3f4f6;
+  background-color: var(--fs-background);
+  font-size: 16px;
+  line-height: 24px;
 }
 
 #root {
